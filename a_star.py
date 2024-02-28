@@ -3,17 +3,15 @@ from utils import makeDescendants, print_puzzle, heuristic_manhattan
 
 
 def search(initial_state, goal_state):
-    queue = deque([(initial_state, 0, heuristic_manhattan(initial_state, goal_state))])
+    queue = deque(
+        [(initial_state, 0, heuristic_manhattan(initial_state, goal_state), 0)]
+    )
     explored = set()
     total_nodes_generated = 0
     max_queue_size = 1
 
     while queue:
-        (
-            current_state,
-            depth,
-            _,
-        ) = queue.popleft()
+        (current_state, depth, _, _) = queue.popleft()
         total_nodes_generated += 1
         max_queue_size = max(max_queue_size, len(queue))
 
@@ -35,10 +33,11 @@ def search(initial_state, goal_state):
                         descendant,
                         depth + 1,
                         heuristic_manhattan(descendant, goal_state),
+                        total_nodes_generated,
                     )
                 )
 
         # Ordena a fila com base na heurística de Distância de Manhattan
-        queue = deque(sorted(queue, key=lambda x: (x[1] + x[2], x[2])))
+        queue = deque(sorted(queue, key=lambda x: (x[1] + x[2], x[2], x[3])))
 
     print("\nNo result found")
